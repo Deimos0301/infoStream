@@ -1,0 +1,47 @@
+{
+    "port": "5100",
+    "pg": {
+        "host": "192.168.22.8",
+        "database": "MISS_BASE",
+        "user": "sa",
+        "password": "sa2008_s48",
+        "port": 5432
+    },
+    "mssql": {
+        "server": "S48-SQL",
+        "user": "sa",
+        "stream": false,
+        "password": "sa2008_s48",
+        "database": "MISS_BASE_EMP",
+        "requestTimeout": 40000,
+        "options": {
+            "requestTimeout": 40000,
+            "encrypt": false
+        },
+        "pool": {
+            "max": 20,
+            "min": 0,
+            "idleTimeoutMillis": 40000
+        }
+    },
+    "parts": [
+        {
+            "name": "Мониторинг",
+            "code": "MON",
+            "url": "/api/mon",
+            "sql": "select * from dbo.MonDataView where [Дата цены] between :start and :end order by [Дата цены], [Регион], [Продукт]"
+        },
+        {
+            "name": "XPrice",
+            "code": "XPRICE",
+            "url": "/api/xprice",
+            "sql": "select * from XPR.DataView where [Дата] between :start and :end order by [Дата], [Категория цен]"
+        },
+        {
+           "name": "CMM",
+            "code": "CMM",
+            "url": "/api/cmm",
+            "sql": "select * from CMM.DataView where [Дата цены] between :start and :end order by [Дата цены] " 
+        }
+    ]
+}
