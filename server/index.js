@@ -153,7 +153,6 @@ app.get('/api/*', async (req, res) => {
     console.log(req.query);
     const part = req.url.split("?")[0].split("/").pop().toUpperCase();
 
-    
     end = end || moment().format('YYYYMMDD');
 
     if (period) {
@@ -180,14 +179,14 @@ app.get('/api/*', async (req, res) => {
     let sql = config.parts.find(e => e.code.toUpperCase() === part).sql;
     sql = sql.replace(":start", `'${start}'`).replace(":end", `'${end}'`)
 
-
-
     const data = (await pool.query(sql)).recordset;
 
     if (!data.length) {
-        res.status(412).json({message: "Данных не найдено!"});
+        res.status(412).json({ message: "Данных не найдено!" });
         return;
     }
+
+    type = 'none' || type;
 
     if (type.toLowerCase() === "csv") {
         const csv = jsonToCsv(data)
@@ -235,8 +234,13 @@ app.get('/api/*', async (req, res) => {
         await workbook.xlsx.write(res);
         res.end();
         return;
-    } 
-    
+    } else if (type.toLowerCase() === "json") {
+        res.setHeader('Content-Disposition', 'Attachment;filename=Test.json');
+        res.write(JSON.stringify(data, null, 4));
+        res.end();
+        return;
+    }
+
     res.status(200).send(data);
 })
 

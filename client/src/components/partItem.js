@@ -114,6 +114,19 @@ const PartItem = (props) => {
                 URL.revokeObjectURL(href);
                 break;
 
+            case "JSON":
+                // blob = new Blob(Array(res.data));
+
+                link = document.createElement('a');
+                href = URL.createObjectURL(res.data);
+                link.href = href;
+
+                link.download = `${partName}_${moment().format("YYYYMMDD")}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(href);
+                break;
         }
     }
 
